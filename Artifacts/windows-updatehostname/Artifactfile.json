@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
+  "title": "Update Host Name",
+  "description": "Update the host name of the machine",
+  "tags": ["Windows"],
+  "targetOsType": "Windows",
+  "parameters": {
+    "HostName": {
+      "type": "string",
+      "displayName": "HostName",
+      "description": "New host name of the machine",
+    }
+  },
+  "runCommand": {
+	"commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./updatehostName.ps1', ' -HostName ', parameters('HostName'), '\"')]"
+  }
+}
