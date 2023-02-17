@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+	<AppSettings>
+		<Setting Key="MyAssistantNotificationAzFunction" Value="MyAssistantNotificationAzFunctionURL" IsKeyVaultSecret="True"/>
+		<Setting Key="MessageConfig" Value='{\"CallerPlatform\":\"AZURETESTLAB_NOTIFICATIONS\",\"CallerApplication\":\"AZURETESTLAB\",\"Payload\":\"{\\\"LabOwner\\\":\\\"{0}\\\",\\\"VMName\\\":\\\"{1}\\\",\\\"delayUrl60\\\":\\\"{2}\\\",\\\"delayUrl120\\\":\\\"{3}\\\"}\"}'/>
+	</AppSettings>
+</Configuration>
