@@ -27,7 +27,7 @@
         "identity": {
           "type": "UserAssigned",
           "userAssignedIdentities": {
-            "/subscriptions/9b56bf17-34a1-41de-b5a2-7ce42c0b1382/resourcegroups/ess-spt-dev-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/spt-dev-managedidentity": {}
+            "/subscriptions/9b56bf17-34a1-41de-b5a2-7ce42c0b1382/resourcegroups/ess-spt-dev-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/spt-aibIdentity-dev-mi": {}
           }
         },
         "properties": {
@@ -53,14 +53,18 @@
           ],
           "distribute": [
             {
-              "type": "ManagedImage",
-              "imageId": "/subscriptions/9b56bf17-34a1-41de-b5a2-7ce42c0b1382/resourceGroups/ess-spt-dev-rg/providers/Microsoft.Compute/images/Win22Image",
-              "location": "East US 2",
+              "type": "SharedImage",
+              "galleryImageId": "/subscriptions/9b56bf17-34a1-41de-b5a2-7ce42c0b1382/resourceGroups/ess-spt-dev-rg/providers/Microsoft.Compute/galleries/spt_devopsss_dev_sig/images/win2022wvd",                 
+              "location": "eastus2",
+			  "runOutputName": "sigOutput",
               "runOutputName": "Windows2022",
               "artifactTags": {
                 "source": "azVmImageBuilder",
                 "baseosimg": "windows2022"
-              }
+              },
+			  "replicationRegions": [
+                      "eastus2"
+                    ]
             }
           ]
         }
