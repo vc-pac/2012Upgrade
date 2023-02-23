@@ -1,4 +1,7 @@
 
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
 try {
     # Install PnP.PowerShell module
     If(Find-Module PnP.PowerShell -RequiredVersion 1.11.0){
