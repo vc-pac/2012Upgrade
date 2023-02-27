@@ -1,43 +1,26 @@
-#install Node JS
-# Define the Node.js version to install
-$nodeVersion = "14.18.1"
+try{
+	$nodeversion="12.14.1"
+    $nodeUrl = "https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-x64.msi"
+    $installPath = "C:\Program Files\nodejs"
+    $nodeInstaller = "$env:TEMP\node-$nodeVersion-x64.msi"
+    Invoke-WebRequest -Uri $nodeUrl -OutFile $nodeInstaller
 
-# Define the installation path for Node.js
-$installPath = "C:\Program Files\nodejs"
+	$process = Start-Process $nodeInstaller -Wait -ArgumentList "/quiet /passive" -PassThru
+	
 
-# Check if an existing version of Node.js is installed and determine the version number
-$existingVersion = $null
-if (Test-Path "$installPath\node.exe") {
-    $existingVersion = node -v
-}
-
-# If an older version of Node.js is installed, uninstall it and remove the environment variables
-if ($existingVersion -ne $null -and $existingVersion -lt "v$nodeVersion") {
-     Start-Process msiexec.exe -Wait -ArgumentList "/x `"$installPath\node-$existingVersion-x64.msi`" /qn"
-    [Environment]::SetEnvironmentVariable("NODEJS_HOME", $null, "Machine")
-    [Environment]::SetEnvironmentVariable("NODEJS_VERSION", $null, "Machine")
-    $oldPath = [Environment]::GetEnvironmentVariable("PATH", "Machine")
-    $newPath = $oldPath.Replace("$installPath;", "")
-    [Environment]::SetEnvironmentVariable("PATH", "$newPath", "Machine")
-}
-
-# If Node.js is not installed or an older version was uninstalled, download and install the latest version
-if ($existingVersion -eq $null -or $existingVersion -lt "v$nodeVersion") {
-    Invoke-WebRequest -Uri "https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-x64.msi" -OutFile "$env:TEMP\nodejs.msi"
-    Start-Process msiexec.exe -Wait -ArgumentList "/i `"$env:TEMP\nodejs.msi`" /qn INSTALLLOCATION=`"$installPath`""
-    Remove-Item "$env:TEMP\nodejs.msi"
-}
-
-# Set up environment variables for Node.js
-[Environment]::SetEnvironmentVariable("NODEJS_HOME", "$installPath", "Machine")
-[Environment]::SetEnvironmentVariable("NODEJS_VERSION", "$nodeVersion", "Machine")
-[Environment]::SetEnvironmentVariable("PATH", "$installPath;$env:PATH", "Machine")
-
-# Verify Node.js installation
-$nodeinstalledversion=node -v
-
-Write-Host "Installed Node version is $nodeinstalledversion"
-
+    # Check if Node.js was installed successfully
+    if ($process.ExitCode -eq 0) {
+        Write-Host "Node.js version $nodeversion has been installed successfully"
+        Write-Host "set environment variable"
+        [Environment]::SetEnvironmentVariable("PATH", "$installPath;$env:PATH", "Machine")
+    }
+    else {
+        Write-Host "Node.js installation failed"
+    }
+    }
+    catch{
+        Write-Host "An exception occurred: $_Exception.message"
+    }
 
 #Install Modules from PSGallery
 function Install-PSGalleryModules {
