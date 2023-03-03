@@ -4,7 +4,7 @@ Param(
     [string] $UserDomain
 )
  
-[Environment]::SetEnvironmentVariable("PATH", "C:\Program Files\CLI;C:\Program Files\NodeJS", [System.EnvironmentVariableTarget]::Machine)
+[Environment]::SetEnvironmentVariable("PATH", "C:\Program Files\CLI;C:\Program Files\Node", [System.EnvironmentVariableTarget]::Machine)
 $domainuser = "$UserDomain\$UserName"
 write-output("Checking user account ...")
 $hostname = $([Environment]::MachineName).tolower()
