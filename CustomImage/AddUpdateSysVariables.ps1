@@ -23,7 +23,16 @@ $command = { C:\Windows\system32\cmdkey.exe /generic:O365 /user:spo_farm2@viacom
     C:\Windows\system32\cmdkey.exe /generic:O365Viacom /user:spo_farm2@viacom.com /pass:Pass3
 }
 try {
-    Start-Process powershell -Credential $credential -ArgumentList "-noexit -command & {$command}" -Wait
+    $job = Start-Job -ScriptBlock {
+
+    cmdkey.exe /generic:O365 /user:spo_farm2@viacom.com /pass:Pass1
+    cmdkey.exe /generic:2013farm /user:mtvn\sp_prd13_farm /pass:Pass2
+    cmdkey.exe /generic:O365Viacom /user:spo_farm2@viacom.com /pass:Pass3
+
+} -Credential $credential
+
+    Write-Output $job.ChildJobs[0].JobStateInfo.Reason.Message
+    Write-Output $job.ChildJobs[0].Error
     write-output("New process started.")
 }
 catch {
