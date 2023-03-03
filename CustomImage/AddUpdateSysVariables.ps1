@@ -19,7 +19,11 @@ Param(
 
             $command = {cmdkey /generic:O365 /user:spo_farm2@viacom.com /pass:Pass1
 cmdkey /generic:2013farm /user:mtvn\sp_prd13_farm /pass:Pass2
-cmdkey /generic:O365Viacom /user:spo_farm2@viacom.com /pass:Pass3}
+cmdkey /generic:O365Viacom /user:spo_farm2@viacom.com /pass:Pass3
+
+[Environment]::SetEnvironmentVariable("PATH", "value2", [System.EnvironmentVariableTarget]::User)
+[Environment]::SetEnvironmentVariable("ENV_1", "value1", [System.EnvironmentVariableTarget]::User)
+}
 
             try {
                 Start-Process powershell -Credential $credential -ArgumentList "-noexit -command & {$command}"
