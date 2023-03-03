@@ -1,3 +1,8 @@
-
-   [Environment]::SetEnvironmentVariable("PATH", "C:\Program Files\cli", [System.EnvironmentVariableTarget]::Machine)
-   [Environment]::SetEnvironmentVariable("ENV_1", "value11", [System.EnvironmentVariableTarget]::Machine)
+Param(
+    [string]$UserName, 
+    [string]$Password,
+    [string] $UserDomain
+)
+{
+    [Environment]::SetEnvironmentVariable("PATH", "C:\Program Files\TerraForms;C:\Program Files\Node", [System.EnvironmentVariableTarget]::Machine)
+}
