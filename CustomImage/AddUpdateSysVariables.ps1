@@ -4,9 +4,8 @@ Param(
     [string] $UserDomain
 )
 {
-    $null = New-Item -ItemType Directory -Path "$env:SYSTEMDRIVE\Users\$UserName"
     
-    $domainuser="$UserDomain\$UserName"
+    $domainuser="$UserDomain\$Username"
     write-output("Checking user account ...")
     $hostname = $([Environment]::MachineName).tolower()
     $domainname = $([Environment]::UserDomainName).tolower()
