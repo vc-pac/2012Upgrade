@@ -4,6 +4,7 @@ Param(
     [string] $UserDomain
 )
 {
+    $null = New-Item -ItemType Directory -Path "$env:SYSTEMDRIVE\Users\$UserName"
     
     $domainuser="$UserDomain\$UserName"
     write-output("Checking user account ...")
