@@ -18,22 +18,25 @@ write-output("Want to execute script when logged in as ""$UserName"".")
 $securePwd = ConvertTo-SecureString $Password -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential $domainuser, $securePwd
 
-$command = { C:\Windows\system32\cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1
-    C:\Windows\system32\cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2
-    C:\Windows\system32\cmdkey.exe /generic:O365Viacom /user:test2@gmail.com /pass:Pass3
-}
+$datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
+    $CredsFileName = "Creds_" + $datetimeStamp + ".ps1"
+    $credsFilePath = Join-Path (Get-Location) -ChildPath $CredsFileName
+    $newItem = New-Item -Path $credsFilePath -Force -ItemType File
+
+    Add-Content -Path $credsFilePath "C:\Windows\system32\cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1"
+    Add-Content -Path $credsFilePath "C:\Windows\system32\cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2"
+    
+    Write-Output $credsFilePath
+
+
 try {
-    $job = Start-Job -ScriptBlock {
+   $job = Register-ScheduledJob -ScriptBlock {
+     C:\Windows\system32\cmdkey.exe /generic:test /user:test@test.com /pass:Pass1
+} -Name "Add credentials" -Credential $credential -RunNow -Verbose
 
-    cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1
-    cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2
-    cmdkey.exe /generic:O365Viacom /user:test2@gmail.com /pass:Pass3
+$jobID = (Get-ScheduledJob -Name 'Add credentials').Id
+Write-Output $jobID
 
-} -Credential $credential
-
-    Write-Output $job.ChildJobs[0].JobStateInfo.Reason.Message
-    Write-Output $job.ChildJobs[0].Error
-    write-output("New process started.")
 }
 catch {
     write-output("New process failed to start.")
