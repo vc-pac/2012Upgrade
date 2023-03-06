@@ -18,16 +18,16 @@ write-output("Want to execute script when logged in as ""$UserName"".")
 $securePwd = ConvertTo-SecureString $Password -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential $domainuser, $securePwd
 
-$command = { C:\Windows\system32\cmdkey.exe /generic:O365 /user:spo_farm2@viacom.com /pass:Pass1
-    C:\Windows\system32\cmdkey.exe /generic:2013farm /user:mtvn\sp_prd13_farm /pass:Pass2
-    C:\Windows\system32\cmdkey.exe /generic:O365Viacom /user:spo_farm2@viacom.com /pass:Pass3
+$command = { C:\Windows\system32\cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1
+    C:\Windows\system32\cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2
+    C:\Windows\system32\cmdkey.exe /generic:O365Viacom /user:test2@gmail.com /pass:Pass3
 }
 try {
     $job = Start-Job -ScriptBlock {
 
-    cmdkey.exe /generic:O365 /user:spo_farm2@viacom.com /pass:Pass1
-    cmdkey.exe /generic:2013farm /user:mtvn\sp_prd13_farm /pass:Pass2
-    cmdkey.exe /generic:O365Viacom /user:spo_farm2@viacom.com /pass:Pass3
+    cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1
+    cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2
+    cmdkey.exe /generic:O365Viacom /user:test2@gmail.com /pass:Pass3
 
 } -Credential $credential
 
