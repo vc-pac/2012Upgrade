@@ -26,7 +26,7 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
     Add-Content -Path $credsFilePath "C:\Windows\system32\cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1"
     Add-Content -Path $credsFilePath "C:\Windows\system32\cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2"
     
-    Write-Output ("Path is:" $credsFilePath)
+    Write-Output $credsFilePath
 
 
 try {
