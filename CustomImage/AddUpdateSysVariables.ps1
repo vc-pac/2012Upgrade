@@ -26,7 +26,7 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
     Add-Content -Path $credsFilePath "C:\Windows\system32\cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1"
     Add-Content -Path $credsFilePath "C:\Windows\system32\cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2"
     
-    Write-Output ("Path is": $credsFilePath)
+    Write-Output ("Path is:" $credsFilePath)
 
 
 try {
@@ -34,6 +34,9 @@ $runAsAdmin = New-ScheduledJobOption -RunElevated
    $job = Register-ScheduledJob -ScriptBlock {
      C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
 } -Name "Add credentials" -Credential $credential -RunNow -Verbose -ScheduledJobOption $runAsAdmin
+
+
+   $job = Register-ScheduledJob -FilePath $credsFilePath -Name "Add credentials1" -Credential $credential -RunNow -Verbose -ScheduledJobOption $runAsAdmin
 
 $jobID = (Get-ScheduledJob -Name 'Add credentials').Id
 Write-Output $jobID
