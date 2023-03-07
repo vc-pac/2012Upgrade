@@ -33,7 +33,7 @@ try {
 $runAsAdmin = New-ScheduledJobOption -RunElevated
    $job = Register-ScheduledJob -ScriptBlock {
      C:\Windows\system32\cmdkey.exe /generic:test /user:test@test.com /pass:Pass1
-} -Name "Add credentials" -Credential $credential -RunNow -Verbose -ScheduledJobOption $RunAsAdmin
+} -Name "Add credentials" -Credential $credential -RunNow -Verbose -ScheduledJobOption $runAsAdmin
 
 $jobID = (Get-ScheduledJob -Name 'Add credentials').Id
 Write-Output $jobID
