@@ -38,7 +38,7 @@ $localcredentials = New-Object System.Management.Automation.PSCredential($localu
 
 write-output("Created local user is ""$localuser.name"".")
 
-write-output("Write-Host "Registering scheduled job")
+write-output("Registering scheduled job..")
 $runAsAdmin = New-ScheduledJobOption -RunElevated
    $job = Register-ScheduledJob -ScriptBlock {
      C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
