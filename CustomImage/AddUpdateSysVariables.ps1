@@ -46,13 +46,14 @@ $runAsAdmin = New-ScheduledJobOption -RunElevated
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
 $task = Get-ScheduledTask -TaskName "Add credentials"
-write-output("Running account is ""$task.Principal"".") 
+write-output("Before update running account is ")
+write-output($task.Principal.UserId) 
 
-$someResult = Set-ScheduledTask -TaskName "Add credentials" -User $domainuser -Password $Password
+$someResult = Set-ScheduledTask -TaskName "Add credentials" -User $domainuser -Password $Password -TaskPath "\Microsoft\Windows\PowerShell\ScheduledJobs"
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
-$task = Get-ScheduledTask -TaskName "Add credentials"
-Write-Output $task.Principal
+write-output("After update running account is ")
+write-output($task.Principal.UserId)
 
 Write-Host " @ Let's start ""$taskName"" manually"
 Start-Job -DefinitionName 'Add credentials' | Format-Table
