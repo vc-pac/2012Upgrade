@@ -18,6 +18,7 @@ write-output("Want to execute script when logged in as ""$UserName"".")
 $securePwd = ConvertTo-SecureString $Password -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential $domainuser, $securePwd
 
+$taskName = "Add credentials"
 $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
     $CredsFileName = "Creds_" + $datetimeStamp + ".ps1"
     $credsFilePath = Join-Path (Get-Location) -ChildPath $CredsFileName
@@ -33,13 +34,26 @@ try {
 $runAsAdmin = New-ScheduledJobOption -RunElevated
    $job = Register-ScheduledJob -ScriptBlock {
      C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
-} -Name "Add credentials" -Credential $credential -RunNow -Verbose -ScheduledJobOption $runAsAdmin
+} -Name "Add credentials" -Verbose -ScheduledJobOption $runAsAdmin
 
+Write-Host " @ Let's look at running account of Add credentials PowerShell job"
+$task = Get-ScheduledTask -TaskName "Add credentials"
+Write-Output $task.Principal
 
-   $job = Register-ScheduledJob -FilePath $credsFilePath -Name "Add credentials1" -Credential $credential -RunNow -Verbose -ScheduledJobOption $runAsAdmin
+$someResult = Set-ScheduledTask -TaskName "Add credentials" -User $domainuser -Password $Password
 
-$jobID = (Get-ScheduledJob -Name 'Add credentials').Id
-Write-Output $jobID
+Write-Host " @ Let's look at running account of Add credentials PowerShell job"
+$task = Get-ScheduledTask -TaskName "Add credentials"
+Write-Output $task.Principal
+
+Write-Host " @ Let's start ""$taskName"" manually"
+Start-Job -DefinitionName 'Add credentials' | Format-Table
+
+Write-Host " @ Let's proof that ""$taskName"" PowerShell job has been launched"; Write-Host;
+Start-Sleep -Seconds 3
+Receive-Job -Name $taskName
+Write-Host;
+
 
 }
 catch {
