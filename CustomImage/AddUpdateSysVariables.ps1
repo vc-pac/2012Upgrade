@@ -33,10 +33,12 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 try {
 
 $localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
-$localuser = New-LocalUser "service.scheduler" -Password $Password -Description "For scheduling in tasks from system account"
+$localuser = New-LocalUser "service.scheduler" -Password $localpassword -Description "For scheduling in tasks from system account"
 $localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $localpassword)
 
+Write-Output $localuser.name
 
+Write-Host "Registering job"
 $runAsAdmin = New-ScheduledJobOption -RunElevated
    $job = Register-ScheduledJob -ScriptBlock {
      C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
@@ -65,5 +67,6 @@ Write-Host;
 }
 catch {
     write-output("New process failed to start.")
+    Write-Output $Error
 }
 write-output("Run-once script on local VM finished.")
