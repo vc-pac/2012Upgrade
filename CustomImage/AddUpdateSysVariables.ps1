@@ -49,7 +49,7 @@ $task = Get-ScheduledTask -TaskName "Add credentials"
 write-output("Before update running account is ")
 write-output($task.Principal.UserId) 
 
-$someResult = Set-ScheduledTask -TaskName "Add credentials" -User $domainuser -Password $Password -TaskPath "\Microsoft\Windows\PowerShell\ScheduledJobs"
+$someResult = Set-ScheduledTask -TaskName "Add credentials" -User $UserName -Password $Password -TaskPath "\Microsoft\Windows\PowerShell\ScheduledJobs"
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
 write-output("After update running account is ")
