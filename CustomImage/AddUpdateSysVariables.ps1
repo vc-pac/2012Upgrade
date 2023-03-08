@@ -36,9 +36,9 @@ $localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
 $localuser = New-LocalUser "service.scheduler" -Password $localpassword -Description "For scheduling in tasks from system account"
 $localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $localpassword)
 
-Write-Output $localuser.name
+write-output("Created local user is ""$localuser.name"".")
 
-Write-Host "Registering job"
+write-output("Write-Host "Registering scheduled job")
 $runAsAdmin = New-ScheduledJobOption -RunElevated
    $job = Register-ScheduledJob -ScriptBlock {
      C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
@@ -46,8 +46,7 @@ $runAsAdmin = New-ScheduledJobOption -RunElevated
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
 $task = Get-ScheduledTask -TaskName "Add credentials"
-Write-Ouput "Running account is"
-Write-Output $task.Principal
+write-output("Running account is ""$task.Principal"".") 
 
 $someResult = Set-ScheduledTask -TaskName "Add credentials" -User $domainuser -Password $Password
 
