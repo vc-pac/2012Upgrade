@@ -31,6 +31,17 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 
 try {
+write-output("Registering scheduled task")
+$sta = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument $credsFilePath
+write-output("Registering scheduled task1")
+# Register a scheduled tasks that can be called 
+Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -Action $sta -User $domainuser -Password $Password
+
+write-output("Registering scheduled task2")
+
+            # Trigger the execution of the scheduled task
+            Get-ScheduledTask -TaskName "cmdKeySvcAccnt" |  Start-ScheduledTask
+
 write-output("Creating local user")
 $localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
 $localuser = New-LocalUser "service.scheduler" -Password $localpassword -Description "For scheduling in tasks from system account"
