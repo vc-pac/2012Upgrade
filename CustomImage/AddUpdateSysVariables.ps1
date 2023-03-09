@@ -32,14 +32,6 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 try {
 
-write-output("Registering scheduled task")
-$sta = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument $credsFilePath
-write-output("Registering scheduled task1")
-# Register a scheduled tasks that can be called 
-Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -Action $sta -User $domainuser -Password $Password
-# Trigger the execution of the scheduled task
-Get-ScheduledTask -TaskName "cmdKeySvcAccnt" |  Start-ScheduledTask
-
 $runAsAdmin = New-ScheduledJobOption -RunElevated
 
 write-output("Registering scheduled task2")
