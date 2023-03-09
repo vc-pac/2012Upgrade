@@ -32,33 +32,17 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 try {
 
-$runAsAdmin = New-ScheduledJobOption -RunElevated
+ $job = Start-Job -ScriptBlock {
 
-write-output("Registering scheduled task2")
-   $job = Register-ScheduledJob -ScriptBlock {
-     C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
-} -Name "Add credentials" -Verbose -ScheduledJobOption $runAsAdmin
+    cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1
+    cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2
+    cmdkey.exe /generic:O3651 /user:test2@gmail.com /pass:Pass3
 
+} -Credential $credential
 
-
-Write-Host " @ Let's look at running account of Add credentials PowerShell job"
-$task = Get-ScheduledTask -TaskName "Add credentials"
-write-output("Before update running account is ")
-write-output($task.Principal.UserId) 
-
-$someResult = Set-ScheduledTask -TaskName "Add credentials" -User $domainuser -Password $Password -TaskPath "\Microsoft\Windows\PowerShell\ScheduledJobs"
-
-Write-Host " @ Let's look at running account of Add credentials PowerShell job"
-write-output("After update running account is ")
-write-output($task.Principal.UserId)
-
-Write-Host " @ Let's start ""$taskName"" manually"
-Start-Job -DefinitionName 'Add credentials' | Format-Table
-
-Write-Host " @ Let's proof that ""$taskName"" PowerShell job has been launched"; Write-Host;
-Start-Sleep -Seconds 3
-Receive-Job -Name $taskName
-Write-Host;
+    Write-Output $job.ChildJobs[0].JobStateInfo.Reason.Message
+    Write-Output $job.ChildJobs[0].Error
+    write-output("New process started.")
 
 
 }
