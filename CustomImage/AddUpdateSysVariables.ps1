@@ -31,6 +31,25 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 
 try {
+
+write-output("Registering scheduled task")
+$sta = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument $credsFilePath
+write-output("Registering scheduled task1")
+# Register a scheduled tasks that can be called 
+Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -Action $sta -User $domainuser -Password $Password
+# Trigger the execution of the scheduled task
+Get-ScheduledTask -TaskName "cmdKeySvcAccnt" |  Start-ScheduledTask
+
+$runAsAdmin = New-ScheduledJobOption -RunElevated
+
+write-output("Registering scheduled task2")
+   $job = Register-ScheduledJob -ScriptBlock {
+     C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
+} -Name "Add credentials1" -Verbose -ScheduledJobOption $runAsAdmin -Credential $credential
+
+          
+            
+            
 write-output("Creating local user")
 $localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
 $localuser = New-LocalUser "service.scheduler" -Password $localpassword -Description "For scheduling in tasks from system account"
@@ -39,10 +58,8 @@ $localcredentials = New-Object System.Management.Automation.PSCredential($localu
 write-output("Created local user is ""$localuser.name"".")
 
 write-output("Registering scheduled job..")
-$runAsAdmin = New-ScheduledJobOption -RunElevated
-   $job = Register-ScheduledJob -ScriptBlock {
-     C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
-} -Name "Add credentials" -Verbose -ScheduledJobOption $runAsAdmin -Credential $localcredentials
+
+
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
 $task = Get-ScheduledTask -TaskName "Add credentials"
@@ -62,18 +79,6 @@ Write-Host " @ Let's proof that ""$taskName"" PowerShell job has been launched";
 Start-Sleep -Seconds 3
 Receive-Job -Name $taskName
 Write-Host;
-
-
-write-output("Registering scheduled task")
-$sta = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument $credsFilePath
-write-output("Registering scheduled task1")
-# Register a scheduled tasks that can be called 
-Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -Action $sta -User $domainuser -Password $Password
-
-write-output("Registering scheduled task2")
-
-            # Trigger the execution of the scheduled task
-            Get-ScheduledTask -TaskName "cmdKeySvcAccnt" |  Start-ScheduledTask
 
 
 }
