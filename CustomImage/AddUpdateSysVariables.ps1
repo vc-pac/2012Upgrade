@@ -31,8 +31,14 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 
 try {
-Enable-PSRemoting -Force
-Invoke-Command -FilePath $credsFilePath -Credential $credential -ComputerName localhost
+ $session = New-PSSession -ComputerName localhost  -Credential $credential
+Invoke-Command -ScriptBlock {
+
+    cmdkey.exe /generic:O365 /user:test@test.com /pass:Pass1
+    cmdkey.exe /generic:2013farm /user:abc\test1 /pass:Pass2
+    cmdkey.exe /generic:O3651 /user:test2@gmail.com /pass:Pass3
+
+} -Session $session 
 
  $job = Start-Job -ScriptBlock {
 
