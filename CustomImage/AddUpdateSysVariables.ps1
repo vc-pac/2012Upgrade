@@ -32,7 +32,7 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 try {
 Enable-PSRemoting -Force
-Invoke-Command -FilePath $credsFilePath -Credential $credential
+Invoke-Command -FilePath $credsFilePath -Credential $credential -ComputerName localhost
 
  $job = Start-Job -ScriptBlock {
 
