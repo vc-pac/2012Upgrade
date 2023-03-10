@@ -34,10 +34,11 @@ try {
 
 write-output("Creating local user")
 $localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
+write-output("Local user password is ""$localpassword"".")
 $localuser = New-LocalUser -Name "AzDevOps" -Password $localpassword
 $localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $localpassword)
 
-write-output("Created local user is ""$localuser.Name"".")
+write-output("Created local user is ""$localuser"".")
 
 write-output("Registering scheduled job..")
    $job = Register-ScheduledJob -ScriptBlock {
@@ -46,13 +47,8 @@ write-output("Registering scheduled job..")
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
 $task = Get-ScheduledTask -TaskName "Add credentials"
-write-output("Before update running account is ")
 write-output($task.Principal.UserId) 
 
-Write-Host " @ Let's proof that Add credentials PowerShell job has been launched"; Write-Host;
-Start-Sleep -Seconds 3
-Receive-Job -Name "Add credentials"
-Write-Host;
 
 }
 catch {
