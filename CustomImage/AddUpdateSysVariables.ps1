@@ -33,10 +33,14 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 try {
 
 write-output("Creating local user")
-$localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
+$localpassword = (New-Guid).ToString()
 write-output("Local user password is ""$localpassword"".")
-$localuser = New-LocalUser -Name "AzDevOps" -Password $localpassword
-$localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $localpassword)
+$securelocalPassword = ConvertTo-SecureString $localpassword -AsPlainText -Force
+
+$localuser = New-LocalUser -Name "AzDevOps" -Password $securelocalPassword
+Write-Output $localuser.name
+Write-Output $localuser
+$localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $securelocalPassword)
 
 write-output("Created local user is ""$localuser"".")
 
@@ -47,6 +51,7 @@ write-output("Registering scheduled job..")
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
 $task = Get-ScheduledTask -TaskName "Add credentials"
+$task
 write-output($task.Principal.UserId) 
 
 
