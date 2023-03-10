@@ -34,7 +34,7 @@ try {
 
 write-output("Creating local user")
 $localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
-$localuser = New-LocalUser "AzDevOps" -Password $localpassword -Description "For scheduling in tasks from system account"
+$localuser = New-LocalUser "AzDevOps" -Password $localpassword
 $localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $localpassword)
 
 write-output("Created local user is ""$localuser.name"".")
