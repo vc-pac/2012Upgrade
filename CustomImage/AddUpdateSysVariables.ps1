@@ -54,6 +54,15 @@ $task = Get-ScheduledTask -TaskName "Add credentials"
 $task
 write-output($task.Principal.UserId) 
 
+Write-Host " @ Let's start ""$taskName"" manually"
+Start-Job -DefinitionName 'Add credentials' | Format-Table
+
+Write-Host " @ Let's proof that Add credentials PowerShell job has been launched"; 
+Write-Host;
+Start-Sleep -Seconds 3
+Receive-Job -Name $taskName
+Write-Host;
+
 
 }
 catch {
