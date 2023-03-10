@@ -34,15 +34,15 @@ try {
 
 write-output("Creating local user")
 $localpassword = ConvertTo-SecureString (New-Guid).Guid -AsPlainText -Force
-$localuser = New-LocalUser "AzDevOps" -Password $localpassword
+$localuser = New-LocalUser -Name "AzDevOps" -Password $localpassword
 $localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $localpassword)
 
-write-output("Created local user is ""$localuser.name"".")
+write-output("Created local user is ""$localuser.Name"".")
 
 write-output("Registering scheduled job..")
    $job = Register-ScheduledJob -ScriptBlock {
      C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
-} -Name "Add credentials" -Verbose -RunNow
+} -Name "Add credentials" -Verbose -RunNow -Credential $localcredentials
 
 Write-Host " @ Let's look at running account of Add credentials PowerShell job"
 $task = Get-ScheduledTask -TaskName "Add credentials"
