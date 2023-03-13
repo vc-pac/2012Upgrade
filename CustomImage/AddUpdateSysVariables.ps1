@@ -32,8 +32,6 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 try {
 
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser
-
 write-output("Creating local user")
 $localusername = 'AzDevOps'
 $localpassword = (New-Guid).ToString()
