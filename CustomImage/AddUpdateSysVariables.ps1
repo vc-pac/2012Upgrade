@@ -4,7 +4,7 @@ Param(
     [string] $UserDomain
 )
  
-[Environment]::SetEnvironmentVariable("PATH", "C:\Program Files\Terraforms;C:\Program Files\NodeJS", [System.EnvironmentVariableTarget]::Machine)
+#[Environment]::SetEnvironmentVariable("PATH", "C:\Program Files\Terraforms;C:\Program Files\NodeJS", [System.EnvironmentVariableTarget]::Machine)
 
 $domainuser = "$UserDomain\$UserName"
 write-output("Validating user account")
@@ -53,7 +53,16 @@ write-output("Registering job")
 $sta = New-ScheduledTaskAction -Execute "c:\Windows\System32\WindowsPowerShell\v1.0\PowerShell.exe" -Argument $credsFilePath
 $time = New-ScheduledTaskTrigger -At (Get-Date) -Once 
 Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -User $localuser.name -Password $localpassword -RunLevel Highest -Trigger $time -Action $sta -Force
-     
+
+
+
+$command = {C:\Windows\system32\cmdkey.exe /generic:O36511 /user:test@test.com /pass:Pass1
+C:\Windows\system32\cmdkey.exe /generic:O36512 /user:test@test.com /pass:Pass1
+}
+
+Start-Process powershell -Credential $localcredentials -ArgumentList "-noexit -command & {$command}"
+write-output("    - New process started.")
+
 }
 catch {
     write-output("New process failed to start.")
