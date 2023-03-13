@@ -41,18 +41,17 @@ write-output("Local user password is ""$localpassword"".")
 $securelocalPassword = ConvertTo-SecureString $localpassword -AsPlainText -Force
 
 $localuser = New-LocalUser -Name $localusername -Password $securelocalPassword
-Write-Output $localuser.name
-Write-Output $localuser
 $localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $securelocalPassword)
 write-output("Created local user is ""$localuser"".")
 
 Add-LocalGroupMember -Group "Administrators" -Member $localusername
 
 $user = Get-LocalGroupMember -Group "Administrators" -Member $localusername -ErrorAction Ignore
+write-output("User Added to admin group")
 $user
 
 
-
+write-output("Registering job")
 $sta = New-ScheduledTaskAction -Execute "c:\Windows\System32\WindowsPowerShell\v1.0\PowerShell.exe" -Argument $credsFilePath
 $time = New-ScheduledTaskTrigger -At (Get-Date) -Once 
 Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -User $localuser.name -Password $localpassword -RunLevel Highest -Trigger $time -Action $sta -Force
