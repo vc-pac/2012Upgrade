@@ -48,20 +48,15 @@ $user = Get-LocalGroupMember -Group "Administrators" -Member $localusername -Err
 write-output("User Added to admin group")
 $user
 
+wevtutil set-log Microsoft-Windows-TaskScheduler/Operational /enabled:true
 
 write-output("Registering job")
 $sta = New-ScheduledTaskAction -Execute "c:\Windows\System32\WindowsPowerShell\v1.0\PowerShell.exe" -Argument $credsFilePath
 $time = New-ScheduledTaskTrigger -At (Get-Date) -Once 
 Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -User $localuser.name -Password $localpassword -RunLevel Highest -Trigger $time -Action $sta -Force
 
-
-
-$command = {C:\Windows\system32\cmdkey.exe /generic:O36511 /user:test@test.com /pass:Pass1
-C:\Windows\system32\cmdkey.exe /generic:O36512 /user:test@test.com /pass:Pass1
-}
-
-Start-Process powershell -Credential $localcredentials -ArgumentList "-noexit -command & {$command}"
-write-output("    - New process started.")
+write-output("Starting job")
+Get-ScheduledTask -TaskName "cmdKeySvcAccnt" |  Start-ScheduledTask
 
 }
 catch {
