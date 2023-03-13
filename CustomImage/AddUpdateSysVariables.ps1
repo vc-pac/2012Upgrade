@@ -44,26 +44,11 @@ $localcredentials = New-Object System.Management.Automation.PSCredential($localu
 
 write-output("Created local user is ""$localuser"".")
 
-write-output("Registering scheduled job..")
-   $job = Register-ScheduledJob -ScriptBlock {
-     C:\Windows\system32\cmdkey.exe /generic:test12 /user:test@test.com /pass:Pass1
-} -Name "Add credentials" -Verbose -RunNow -Credential $localcredentials
-
-Write-Host " @ Let's look at running account of Add credentials PowerShell job"
-$task = Get-ScheduledTask -TaskName "Add credentials"
-$task
-write-output($task.Principal.UserId) 
-
-Write-Host " @ Let's start ""$taskName"" manually"
-Start-Job -DefinitionName 'Add credentials' | Format-Table
-
-Write-Host " @ Let's proof that Add credentials PowerShell job has been launched"; 
-Write-Host;
-Start-Sleep -Seconds 3
-Receive-Job -Name $taskName
-Write-Host;
-
-
+$sta = New-ScheduledTaskAction -Execute "c:\Windows\System32\WindowsPowerShell\v1.0\PowerShell.exe" -Argument $credsFilePath
+$start = (Get-Date).AddSeconds(10)
+$time = New-ScheduledTaskTrigger -At $start -Once 
+Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -User $localuser.name -Password $localpassword -RunLevel Highest -Trigger $time -Action $sta -Force
+     
 }
 catch {
     write-output("New process failed to start.")
