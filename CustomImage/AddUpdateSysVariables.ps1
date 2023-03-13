@@ -32,6 +32,8 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 
 try {
 
+Set-ExecutionPolicy -ExecutionPolicy Bypass
+
 write-output("Creating local user")
 $localusername = 'AzDevOps'
 $localpassword = (New-Guid).ToString()
@@ -48,6 +50,8 @@ Add-LocalGroupMember -Group "Administrators" -Member $localusername
 
 $user = Get-LocalGroupMember -Group "Administrators" -Member $localusername -ErrorAction Ignore
 $user
+
+
 
 $sta = New-ScheduledTaskAction -Execute "c:\Windows\System32\WindowsPowerShell\v1.0\PowerShell.exe" -Argument $credsFilePath
 $time = New-ScheduledTaskTrigger -At (Get-Date) -Once 
