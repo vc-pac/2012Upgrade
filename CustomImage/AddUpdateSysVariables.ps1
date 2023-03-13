@@ -46,6 +46,9 @@ write-output("Created local user is ""$localuser"".")
 
 Add-LocalGroupMember -Group "Administrators" -Member $localusername
 
+$user = Get-LocalGroupMember -Group "Administrators" -Member $localusername -ErrorAction Ignore
+$user
+
 $sta = New-ScheduledTaskAction -Execute "c:\Windows\System32\WindowsPowerShell\v1.0\PowerShell.exe" -Argument $credsFilePath
 $time = New-ScheduledTaskTrigger -At (Get-Date) -Once 
 Register-ScheduledTask -TaskName "cmdKeySvcAccnt" -User $localuser.name -Password $localpassword -RunLevel Highest -Trigger $time -Action $sta -Force
