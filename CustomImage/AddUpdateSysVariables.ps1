@@ -33,16 +33,18 @@ $datetimeStamp = Get-Date -Format "ddMMMyyyyHHmmss"
 try {
 
 write-output("Creating local user")
+$localusername = 'AzDevOps'
 $localpassword = (New-Guid).ToString()
 write-output("Local user password is ""$localpassword"".")
 $securelocalPassword = ConvertTo-SecureString $localpassword -AsPlainText -Force
 
-$localuser = New-LocalUser -Name "AzDevOps" -Password $securelocalPassword
+$localuser = New-LocalUser -Name $localusername -Password $securelocalPassword
 Write-Output $localuser.name
 Write-Output $localuser
 $localcredentials = New-Object System.Management.Automation.PSCredential($localuser.name, $securelocalPassword)
-
 write-output("Created local user is ""$localuser"".")
+
+Add-LocalGroupMember -Group "Administrators" -Member $localusername
 
 $sta = New-ScheduledTaskAction -Execute "c:\Windows\System32\WindowsPowerShell\v1.0\PowerShell.exe" -Argument $credsFilePath
 $start = (Get-Date).AddSeconds(10)
